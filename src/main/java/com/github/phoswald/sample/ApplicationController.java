@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.phoswald.sample.builders.ImageFactory;
 import com.github.phoswald.sample.builders.MandelbrotImageFactory;
+import com.github.phoswald.sample.export.ImageExporter;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,12 +17,14 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class ApplicationController implements Initializable {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final ImageFactory imageBuilder = new MandelbrotImageFactory(); 
+    private final ImageFactory imageBuilder = new MandelbrotImageFactory();
+    private final ImageExporter imageExporter = new ImageExporter();
 
     @FXML
     private Button clearButton;
@@ -51,8 +54,10 @@ public class ApplicationController implements Initializable {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         int width = (int) canvas.getWidth();
         int height = (int) canvas.getHeight();
+        Image image = imageBuilder.createImage(width, height);
         gc.setGlobalBlendMode(BlendMode.SRC_OVER);
-        gc.drawImage(imageBuilder.createImage(width, height), 0, 0, width, height);
+        gc.drawImage(image, 0, 0, width, height);
         logger.info("Drawing complete.");
+        imageExporter.export(image);
     }
 }
