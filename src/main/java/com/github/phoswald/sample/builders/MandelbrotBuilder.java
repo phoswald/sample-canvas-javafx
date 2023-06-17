@@ -7,7 +7,7 @@ import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 
-public class MandelbrotImageFactory implements ImageFactory {
+public class MandelbrotBuilder {
     
     private static final int BLACK = 0xFF000000;
     private static final int WHITE = 0xFFFFFFFF;
@@ -17,16 +17,30 @@ public class MandelbrotImageFactory implements ImageFactory {
     private final double ptMinImag = 2.5;
     private final double ptMaxReal = 2.5;
     private final double ptMaxImag = -2.5;
-    private final int iterMax = 20;
-
-    @Override
-    public Image createImage(int width, int height) {
-        int[] pixelArray = new int[width * height];
-        PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(
+    
+    private final int width;
+    private final int height;
+    private final int[] pixelArray;
+    private final PixelBuffer<IntBuffer> pixelBuffer;
+    private final WritableImage image;
+    private int iterMax = 2;
+    
+    public MandelbrotBuilder(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.pixelArray = new int[width * height];
+        this.pixelBuffer = new PixelBuffer<>(
                 width, height, 
                 IntBuffer.wrap(pixelArray), 
                 PixelFormat.getIntArgbPreInstance());
-        WritableImage image = new WritableImage(pixelBuffer);
+        this.image = new WritableImage(pixelBuffer);
+    }
+    
+    public Image getImage() {
+        return image;
+    }
+
+    public void updateImage() {
         double deltaX = (ptMaxReal - ptMinReal) / width;
         double deltaY = (ptMaxImag - ptMinImag) / height;
         for(int index = 0, y = 0; y < height; y++) {
@@ -50,6 +64,7 @@ public class MandelbrotImageFactory implements ImageFactory {
                 }
             }
         }
-        return image;
+        iterMax++;
+        pixelBuffer.updateBuffer(pb -> null);
     }
 }

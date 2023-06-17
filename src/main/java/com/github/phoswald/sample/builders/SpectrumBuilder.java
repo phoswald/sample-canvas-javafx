@@ -7,9 +7,8 @@ import javafx.scene.image.PixelBuffer;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.WritableImage;
 
-public class SpectrumImageFactory implements ImageFactory {
+public class SpectrumBuilder {
 
-    @Override
     public Image createImage(int width, int height) {
         int[] pixelArray = new int[width * height];
         PixelBuffer<IntBuffer> pixelBuffer = new PixelBuffer<>(
